@@ -2,9 +2,13 @@
 import js from "@eslint/js";
 import react from "eslint-plugin-react";
 import jest from "eslint-plugin-jest";
+import globals from "globals";
 
 export default [
   js.configs.recommended,
+  {
+    ignores: ["node_modules","dist", "build"],
+  },
   {
     files: ["**/*.js", "**/*.jsx"],
     languageOptions: {
@@ -16,6 +20,11 @@ export default [
         document: "readonly",
         test: "readonly",
         expect: "readonly",
+      },
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     plugins: {

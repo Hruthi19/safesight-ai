@@ -41,8 +41,7 @@ jobs:
         working-directory: ${{ matrix.service }}
         run: |
           if [ -f "package.json" ]; then
-            npx eslint .
-          fi
+            npx eslint . --max-warnings=0
 
       - name: Run tests
         if: matrix.service != 'ml-service'
