@@ -42,6 +42,7 @@ jobs:
         run: |
           if [ -f "package.json" ]; then
             npx eslint . --max-warnings=0
+          fi
 
       - name: Run tests
         if: matrix.service != 'ml-service'
