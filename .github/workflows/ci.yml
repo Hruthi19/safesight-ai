@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:24.0.6
+        options: --privileged
+
+    strategy:
+      matrix:
+        service: [frontend, backend, ml-service]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (for frontend/backend)
+        if: matrix.service != 'ml-service'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+          fi
+
+      - name: Run ESLint
+        if: matrix.service != 'ml-service'
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f "package.json" ]; then
+            npx eslint .
+          fi
+
+      - name: Run tests
+        if: matrix.service != 'ml-service'
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f "package.json" ]; then
+            npm test -- --ci --watchAll=false
+          fi
+
+      - name: Set up Python (for ML service)
+        if: matrix.service == 'ml-service'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install ML dependencies
+        if: matrix.service == 'ml-service'
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: Run ML tests
+        if: matrix.service == 'ml-service'
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f "tests/test_api.py" ]; then
+            pytest -v
+          fi
+
+      - name: Build Docker image
+        run: |
+          docker build -t safesight-${{ matrix.service }}:latest ./${{ matrix.service }}

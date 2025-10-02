@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pydantic
+torch
+ultralytics   # YOLOv8
+transformers  # Hugging Face models
