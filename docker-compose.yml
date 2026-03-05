@@ -1,66 +1,65 @@
+
 services:
+
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
+    container_name: safesight-frontend
     ports:
       - "5173:5173"
-    env_file:
-      - ./frontend/.env    
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://backend:3000
     depends_on:
       - backend
+    networks:
+      - safesight-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
+    container_name: safesight-backend
     ports:
-      - "4000:4000"   
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://safesight:safesight@postgres:5432/safesight
+      - REDIS_HOST=redis
+      - ML_SERVICE_URL=http://ml-service:8000
     depends_on:
       - postgres
       - redis
       - ml-service
+    networks:
+      - safesight-network
+
+  ml-service:
+    build: ./ml-service
+    container_name: safesight-ml
+    ports:
+      - "8000:8000"
+    networks:
+      - safesight-network
 
   postgres:
     image: postgres:15
+    container_name: safesight-postgres
+    restart: always
     environment:
-      POSTGRES_USER: hrth
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: safesight
+      POSTGRES_PASSWORD: safesight
       POSTGRES_DB: safesight
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5433:5432"
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - safesight-network
 
   redis:
     image: redis:7
-    restart: always
+    container_name: safesight-redis
     ports:
       - "6379:6379"
+    networks:
+      - safesight-network
 
-  ml-service:
-    build:
-      context: ./ml-service
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./ml-service:/app
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
+networks:
+  safesight-network:
 
 volumes:
-  pgdata:
+  postgres-data:

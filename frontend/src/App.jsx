@@ -1,8 +1,17 @@
-import React, { useState } from "react";
-import DetectionApp from "../src/components/detection/DetectionApp";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-export default function App(){
-  
-    return <DetectionApp />;
+import Dashboard from "./pages/Dashboard";
+import Report from "./pages/Report";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/report" element={<Report />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
+export default App;
