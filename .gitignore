@@ -1,0 +1,28 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# Build output
+dist/
+build/
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+
+# Vite
+.vite
+
+# Coverage
+coverage/
+
+# Docker
+*.pid
+*.seed
