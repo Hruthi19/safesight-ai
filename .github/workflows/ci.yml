@@ -78,6 +78,7 @@ jobs:
         if: matrix.service == 'ml-service'
         working-directory: ml-service
         run: |
+          export PYTHONPATH=$(pwd)
           if [ -d "tests" ]; then
             pytest -v
           fi
