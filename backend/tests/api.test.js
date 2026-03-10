@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../index"); 
+const app = require("../src/app"); 
 
 describe("Incident API", () => {
   it("should return 201 on incident creation", async () => {
