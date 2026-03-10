@@ -13,6 +13,9 @@ class DetectRequest(BaseModel):
 def root():
     return {"status": "ml-service ok"}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/detect")
 def detect(req: DetectRequest):
