@@ -1,6 +1,16 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 torch
 ultralytics   # YOLOv8
 transformers  # Hugging Face models
+requests
+boto3
+opencv-python
+pillow
+numpy
+sqlalchemy
+psycopg2-binary
+minio
+python-multipart
+websockets

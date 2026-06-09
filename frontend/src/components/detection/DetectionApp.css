@@ -1,6 +1,16 @@
+.detection-container h2 {
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+
+.detection-container > p {
+  margin: 0 0 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
 .detection-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 0;
 }
 
 .input-container {
@@ -30,12 +40,32 @@
 
 .bbox {
   position: absolute;
-  border: 2px solid red;
-  color: red;
+  border: 2px solid #e53935;
+  color: #e53935;
   font-weight: bold;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.65);
   pointer-events: none;
+}
+
+.status-message {
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: #eef6ff;
+  border-left: 4px solid #2563eb;
+  border-radius: 4px;
 }
 
 .detections-list {
   margin-top: 20px;
+}
+
+.detections-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.detections-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
 }

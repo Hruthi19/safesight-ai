@@ -1,0 +1,60 @@
+.workflow-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.workflow-item {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.workflow-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 18px;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.workflow-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 3px solid #dbeafe;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.workflow-content {
+  flex: 1;
+}
+
+.workflow-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.workflow-time {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.workflow-notes {
+  margin: 6px 0 0;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.workflow-user {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}

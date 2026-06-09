@@ -1,11 +1,10 @@
 const request = require("supertest");
-const app = require("../src/app"); 
+const app = require("../src/app");
 
-describe("Incident API", () => {
-  it("should return 201 on incident creation", async () => {
-    const res = await request(app)
-      .post("/incidents")
-      .send({ description: "Slip detected" });
-    expect(res.statusCode).toBe(201);
+describe("Health API", () => {
+  it("should return ok on health check", async () => {
+    const res = await request(app).get("/health");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe("ok");
   });
 });

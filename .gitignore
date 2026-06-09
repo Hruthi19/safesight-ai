@@ -26,3 +26,8 @@ coverage/
 # Docker
 *.pid
 *.seed
+
+# Python test artifacts
+test.db
+__pycache__/
+*.pyc

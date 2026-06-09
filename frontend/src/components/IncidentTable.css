@@ -1,0 +1,73 @@
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.incident-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.incident-table th,
+.incident-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.incident-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.incident-table th:hover {
+  background: #f1f5f9;
+}
+
+.incident-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.sort-icon {
+  font-size: 0.7rem;
+  color: #3b82f6;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.link-btn {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  background: #fff;
+  border-radius: 10px;
+  color: #64748b;
+}
+
+.empty-state a {
+  color: #2563eb;
+}
