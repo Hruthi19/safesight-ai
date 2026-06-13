@@ -38,6 +38,8 @@ export const api = {
 
   getIncidents: () => request("/incidents"),
 
+  getAnalytics: () => request("/incidents/analytics"),
+
   getIncident: (id) => request(`/incidents/${id}`),
 
   createIncident: (payload) =>

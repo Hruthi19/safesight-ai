@@ -4,8 +4,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DetectionApp from "./components/detection/DetectionApp";
 import { AuthProvider } from "./context/AuthContext";
+import Analytics from "./pages/Analytics";
 import Dashboard from "./pages/Dashboard";
 import IncidentDetail from "./pages/IncidentDetail";
+import LiveFeed from "./pages/LiveFeed";
 import Login from "./pages/Login";
 import Report from "./pages/Report";
 import "./styles/global.css";
@@ -29,10 +31,26 @@ function App() {
             }
           />
           <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/incidents/:id"
             element={
               <ProtectedRoute>
                 <IncidentDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/live"
+            element={
+              <ProtectedRoute>
+                <LiveFeed />
               </ProtectedRoute>
             }
           />

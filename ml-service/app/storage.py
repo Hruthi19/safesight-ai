@@ -30,3 +30,10 @@ def upload_image(file_path):
     object_name = f"{uuid.uuid4()}.jpg"
     s3.upload_file(file_path, BUCKET, object_name)
     return f"{MINIO_PUBLIC_URL}/{BUCKET}/{object_name}"
+
+
+def upload_video(file_path):
+    ensure_bucket()
+    object_name = f"clips/{uuid.uuid4()}.mp4"
+    s3.upload_file(file_path, BUCKET, object_name)
+    return f"{MINIO_PUBLIC_URL}/{BUCKET}/{object_name}"

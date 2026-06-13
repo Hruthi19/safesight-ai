@@ -1,14 +1,15 @@
+import os
+
+from ultralytics import YOLO
+
 from app.fire_detector import detect_fire_smoke
 
 
 class HazardDetector:
-
     def __init__(self):
-        from ultralytics import YOLO
+        self.model = YOLO(os.getenv("YOLO_MODEL_PATH", "yolov8n.pt"))
 
-        self.model = YOLO("yolov8n.pt")
-
-    def _yolo_detect(self, image_path):
+    def detect(self, image_path):
         results = self.model(image_path)
         detections = []
 
@@ -22,12 +23,8 @@ class HazardDetector:
                     }
                 )
 
-        return detections
-
-    def detect(self, image_path):
-        yolo_detections = self._yolo_detect(image_path)
         fire_detections = detect_fire_smoke(image_path)
-        return yolo_detections + fire_detections
+        return detections + fire_detections
 
 
 _detector = None

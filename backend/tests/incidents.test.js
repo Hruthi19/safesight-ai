@@ -32,6 +32,10 @@ jest.mock("../src/jobs/queue", () => ({
   enqueueIncidentJobs: jest.fn(() => Promise.resolve()),
 }));
 
+jest.mock("../src/socket", () => ({
+  emitIncident: jest.fn(),
+}));
+
 const request = require("supertest");
 const app = require("../src/app");
 const incidentService = require("../src/services/incidentService");

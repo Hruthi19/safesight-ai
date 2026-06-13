@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { api } from "../api/client";
+import AlertToast from "../components/AlertToast";
 import IncidentTable from "../components/IncidentTable";
 import Layout from "../components/Layout";
+import { useSocket } from "../hooks/useSocket";
 import "./Dashboard.css";
 
 export default function Dashboard() {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [toastAlerts, setToastAlerts] = useState([]);
 
   const loadIncidents = useCallback(async () => {
     try {
@@ -21,30 +24,52 @@ export default function Dashboard() {
     }
   }, []);
 
+  const handleSocketEvent = useCallback((event, data) => {
+    loadIncidents();
+
+    if (event === "incident:new") {
+      setToastAlerts((prev) => [...prev, { type: "new", ...data }]);
+    } else if (event === "incident:escalated") {
+      setToastAlerts((prev) => [...prev, { type: "escalated", ...data }]);
+    }
+  }, [loadIncidents]);
+
+  const { connected } = useSocket(handleSocketEvent);
+
   useEffect(() => {
     loadIncidents();
-    const interval = setInterval(loadIncidents, 15000);
-    return () => clearInterval(interval);
   }, [loadIncidents]);
 
   const stats = {
     total: incidents.length,
-    open: incidents.filter((i) => !["resolved", "closed"].includes(i.status)).length,
+    open: incidents.filter((i) => !["resolved", "closed"].includes(i.status))
+      .length,
     high: incidents.filter((i) => i.severity === "high").length,
     escalated: incidents.filter((i) => i.status === "escalated").length,
   };
 
   return (
     <Layout>
+      <AlertToast
+        alerts={toastAlerts}
+        onDismiss={() => setToastAlerts((prev) => prev.slice(1))}
+      />
+
       <div className="dashboard">
         <div className="page-header">
           <div>
             <h2>Incident Dashboard</h2>
             <p>Monitor and manage workplace hazards in real time</p>
           </div>
-          <button type="button" className="btn-secondary" onClick={loadIncidents}>
-            Refresh
-          </button>
+          <div className="header-actions">
+            <span className="live-indicator">
+              <span className={`live-dot ${connected ? "connected" : ""}`} />
+              {connected ? "Live" : "Connecting..."}
+            </span>
+            <button type="button" className="btn-secondary" onClick={loadIncidents}>
+              Refresh
+            </button>
+          </div>
         </div>
 
         <div className="stats-grid">

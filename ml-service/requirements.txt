@@ -1,16 +1,13 @@
 fastapi
 uvicorn[standard]
 pydantic
-torch
-ultralytics   # YOLOv8
-transformers  # Hugging Face models
+ultralytics
 requests
 boto3
-opencv-python
+opencv-python-headless
 pillow
 numpy
 sqlalchemy
 psycopg2-binary
-minio
 python-multipart
 websockets

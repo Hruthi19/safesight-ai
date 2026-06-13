@@ -11,6 +11,11 @@ jest.mock("./api/client", () => ({
 }));
 
 jest.mock("./components/detection/DetectionApp", () => () => <div>Detect</div>);
+jest.mock("./pages/LiveFeed", () => () => <div>Live Feed</div>);
+jest.mock("./pages/Analytics", () => () => <div>Analytics</div>);
+jest.mock("./hooks/useSocket", () => ({
+  useSocket: () => ({ connected: false }),
+}));
 
 test("redirects unauthenticated users to login", async () => {
   window.history.pushState({}, "", "/");

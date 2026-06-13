@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
 const incidentRoutes = require("./routes/incidents");
+const webhookRoutes = require("./routes/webhooks");
 
 const app = express();
 
@@ -15,5 +16,6 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/incidents", incidentRoutes);
+app.use("/webhooks", webhookRoutes);
 
 module.exports = app;

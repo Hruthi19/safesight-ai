@@ -9,6 +9,8 @@ export default function Layout({ children }) {
 
   const navItems = [
     { path: "/", label: "Dashboard" },
+    { path: "/analytics", label: "Analytics" },
+    { path: "/live", label: "Live Feed" },
     { path: "/detect", label: "Detect" },
     { path: "/report", label: "Report" },
   ];

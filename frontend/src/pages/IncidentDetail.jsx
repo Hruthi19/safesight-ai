@@ -135,6 +135,12 @@ export default function IncidentDetail() {
             ) : (
               <p className="empty-text">No image attached</p>
             )}
+            {incident.clip_url && (
+              <div className="clip-preview" style={{ marginTop: 16 }}>
+                <h4>Video Clip</h4>
+                <video src={incident.clip_url} controls width="100%" />
+              </div>
+            )}
           </div>
 
           <div className="detail-card detail-wide">

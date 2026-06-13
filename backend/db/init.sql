@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS incidents (
   confidence FLOAT,
   bbox TEXT,
   timestamp VARCHAR(50),
+  clip_url VARCHAR(500),
   assigned_to INT REFERENCES users(id) ON DELETE SET NULL,
   created_by INT REFERENCES users(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),

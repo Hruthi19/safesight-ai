@@ -35,12 +35,13 @@ async function createIncident(data, userId) {
     const confidence = data.confidence ?? detection?.confidence ?? null;
     const bbox = data.bbox ? JSON.stringify(data.bbox) : detection?.bbox || null;
     const imageUrl = data.image_url || detection?.image_url || null;
+    const clipUrl = data.clip_url || null;
 
     const result = await client.query(
       `INSERT INTO incidents (
         detection_id, incident_type, severity, status, location,
-        image_url, confidence, bbox, created_by
-      ) VALUES ($1, $2, $3, 'detected', $4, $5, $6, $7, $8)
+        image_url, clip_url, confidence, bbox, created_by
+      ) VALUES ($1, $2, $3, 'detected', $4, $5, $6, $7, $8, $9)
       RETURNING *`,
       [
         data.detection_id || null,
@@ -48,6 +49,7 @@ async function createIncident(data, userId) {
         severity,
         data.location || null,
         imageUrl,
+        clipUrl,
         confidence,
         bbox,
         userId,
@@ -72,6 +74,16 @@ async function createIncident(data, userId) {
   } finally {
     client.release();
   }
+}
+
+async function createIncidentFromML(data) {
+  return createIncident(
+    {
+      ...data,
+      location: data.location || "ML auto-detection",
+    },
+    null
+  );
 }
 
 async function getWorkflowSteps(incidentId) {
@@ -155,6 +167,7 @@ async function updateIncidentStatus(id, status, userId, notes) {
 
 module.exports = {
   createIncident,
+  createIncidentFromML,
   getIncidentById,
   listIncidents,
   updateIncidentStatus,

@@ -2,7 +2,9 @@ const express = require("express");
 const { authenticate } = require("../middleware/auth");
 const { requirePermission, canUpdateStatus, VALID_STATUSES } = require("../middleware/rbac");
 const incidentService = require("../services/incidentService");
+const analyticsService = require("../services/analyticsService");
 const { enqueueIncidentJobs } = require("../jobs/queue");
+const { emitIncident } = require("../socket");
 
 const router = express.Router();
 
@@ -22,6 +24,7 @@ router.post("/", requirePermission("incidents:create"), async (req, res) => {
   try {
     const incident = await incidentService.createIncident(req.body, req.user.id);
     await enqueueIncidentJobs(incident);
+    emitIncident("incident:new", incident);
 
     res.status(201).json({ success: true, data: incident });
   } catch (err) {
@@ -30,6 +33,16 @@ router.post("/", requirePermission("incidents:create"), async (req, res) => {
       success: false,
       error: err.message || "Failed to create incident",
     });
+  }
+});
+
+router.get("/analytics", requirePermission("incidents:read"), async (req, res) => {
+  try {
+    const data = await analyticsService.getAnalytics();
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error("Analytics error:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch analytics" });
   }
 });
 
@@ -84,6 +97,8 @@ router.patch("/:id/status", async (req, res) => {
       req.user.id,
       notes
     );
+
+    emitIncident("incident:updated", incident);
 
     res.json({ success: true, data: incident });
   } catch (err) {

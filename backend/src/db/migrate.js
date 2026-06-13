@@ -10,9 +10,17 @@ const SEED_USERS = [
 ];
 
 async function runMigrations() {
-  const sqlPath = path.join(__dirname, "../../db/migrate_week3.sql");
-  const sql = fs.readFileSync(sqlPath, "utf8");
-  await pool.query(sql);
+  const week3 = fs.readFileSync(
+    path.join(__dirname, "../../db/migrate_week3.sql"),
+    "utf8"
+  );
+  await pool.query(week3);
+
+  const week5Path = path.join(__dirname, "../../db/migrate_week5.sql");
+  if (fs.existsSync(week5Path)) {
+    const week5 = fs.readFileSync(week5Path, "utf8");
+    await pool.query(week5);
+  }
 
   for (const user of SEED_USERS) {
     const hash = await bcrypt.hash(user.password, 10);

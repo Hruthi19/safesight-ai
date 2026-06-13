@@ -1,6 +1,8 @@
 const { Worker } = require("bullmq");
 const pool = require("../db/pool");
 const { connection } = require("./queue");
+const { notifyIncident, notifyEscalation } = require("../services/notifications");
+const { emitIncident } = require("../socket");
 
 function startWorkers() {
   const notificationWorker = new Worker(
@@ -8,7 +10,7 @@ function startWorkers() {
     async (job) => {
       const { incidentId, incidentType, severity } = job.data;
       console.log(
-        `[NOTIFY] Incident #${incidentId}: ${incidentType} (${severity}) — alerting managers`
+        `[NOTIFY] Incident #${incidentId}: ${incidentType} (${severity})`
       );
 
       await pool.query(
@@ -26,6 +28,23 @@ function startWorkers() {
         ]
       );
 
+      const result = await pool.query(
+        "SELECT * FROM incidents WHERE id = $1",
+        [incidentId]
+      );
+      const incident = result.rows[0];
+
+      if (incident) {
+        emitIncident("incident:updated", incident);
+      }
+
+      await notifyIncident({
+        incidentId,
+        incidentType,
+        severity,
+        status: "notified",
+      });
+
       return { notified: true };
     },
     { connection }
@@ -37,7 +56,7 @@ function startWorkers() {
       const { incidentId, severity } = job.data;
 
       const result = await pool.query(
-        "SELECT status FROM incidents WHERE id = $1",
+        "SELECT * FROM incidents WHERE id = $1",
         [incidentId]
       );
 
@@ -45,14 +64,15 @@ function startWorkers() {
         return { escalated: false, reason: "incident not found" };
       }
 
-      const status = result.rows[0].status;
-      if (status === "resolved" || status === "closed") {
+      const incident = result.rows[0];
+      if (incident.status === "resolved" || incident.status === "closed") {
         return { escalated: false, reason: "already closed" };
       }
 
-      if (status !== "escalated") {
+      if (incident.status !== "escalated") {
         await pool.query(
-          `UPDATE incidents SET status = 'escalated', updated_at = NOW() WHERE id = $1`,
+          `UPDATE incidents SET status = 'escalated', updated_at = NOW()
+           WHERE id = $1`,
           [incidentId]
         );
 
@@ -65,6 +85,14 @@ function startWorkers() {
           ]
         );
 
+        const updated = await pool.query(
+          "SELECT * FROM incidents WHERE id = $1",
+          [incidentId]
+        );
+
+        emitIncident("incident:escalated", updated.rows[0]);
+        await notifyEscalation({ incidentId, severity });
+
         console.log(`[ESCALATE] Incident #${incidentId} escalated`);
         return { escalated: true };
       }
@@ -74,11 +102,11 @@ function startWorkers() {
     { connection }
   );
 
-  notificationWorker.on("failed", (job, err) => {
+  notificationWorker.on("failed", (_job, err) => {
     console.error("[NOTIFY] Job failed:", err.message);
   });
 
-  escalationWorker.on("failed", (job, err) => {
+  escalationWorker.on("failed", (_job, err) => {
     console.error("[ESCALATE] Job failed:", err.message);
   });
 

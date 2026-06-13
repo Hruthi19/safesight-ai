@@ -1,2 +1,9 @@
 __pycache__
 *.pyc
+*.pyo
+*.db
+tests
+.pytest_cache
+*.pt
+.git
+.env
