@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def detect_incidents(hazards):
 
     incidents = []
@@ -27,12 +28,14 @@ def detect_incidents(hazards):
         else:
             continue
 
-        incidents.append({
-            "incident_type": incident_type,
-            "severity": severity,
-            "timestamp": datetime.utcnow().isoformat(),
-            "bbox": hazard["bbox"],
-            "confidence": hazard["confidence"]
-        })
+        incidents.append(
+            {
+                "incident_type": incident_type,
+                "severity": severity,
+                "timestamp": datetime.utcnow().isoformat(),
+                "bbox": hazard["bbox"],
+                "confidence": hazard["confidence"],
+            }
+        )
 
     return incidents

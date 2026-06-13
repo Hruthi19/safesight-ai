@@ -3,7 +3,14 @@ import tempfile
 import uuid
 
 import requests
-from fastapi import FastAPI, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import (
+    FastAPI,
+    HTTPException,
+    Request,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -112,7 +119,9 @@ async def detect(request: Request):
         result = run_detection(image_path)
 
         if result["incidents"]:
-            await broadcast({"type": "incident_alert", "incidents": result["incidents"]})
+            await broadcast(
+                {"type": "incident_alert", "incidents": result["incidents"]}
+            )
 
         return {
             "detections": result["detections"],

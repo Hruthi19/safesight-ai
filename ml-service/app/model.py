@@ -14,11 +14,13 @@ class HazardDetector:
 
         for r in results:
             for box in r.boxes:
-                detections.append({
-                    "label": r.names[int(box.cls)],
-                    "confidence": float(box.conf),
-                    "bbox": box.xyxy.tolist()[0],
-                })
+                detections.append(
+                    {
+                        "label": r.names[int(box.cls)],
+                        "confidence": float(box.conf),
+                        "bbox": box.xyxy.tolist()[0],
+                    }
+                )
 
         return detections
 

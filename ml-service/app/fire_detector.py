@@ -119,12 +119,10 @@ def detect_fire_smoke(image_path):
 
     detections = []
 
-    for _, bbox in _components(mask_fire, MIN_FIRE_AREA)[:MAX_FIRE_DETECTIONS * 2]:
+    for _, bbox in _components(mask_fire, MIN_FIRE_AREA)[: MAX_FIRE_DETECTIONS * 2]:
         valid, confidence = _validate_fire_region(hsv, mask_fire, bbox)
         if valid:
-            detections.append(
-                {"label": "fire", "confidence": confidence, "bbox": bbox}
-            )
+            detections.append({"label": "fire", "confidence": confidence, "bbox": bbox})
         if len(detections) >= MAX_FIRE_DETECTIONS:
             break
 
